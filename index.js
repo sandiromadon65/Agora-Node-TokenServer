@@ -1,6 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
-const {RtcTokenBuilder, RtcRole, RtmTokenBuilder, RtmRole} = require('agora-access-token');
+const { RtcTokenBuilder, RtcRole, RtmTokenBuilder, RtmRole } = require('agora-access-token');
 
 dotenv.config();
 const app = express();
@@ -16,7 +16,7 @@ const nocache = (_, resp, next) => {
 }
 
 const ping = (req, resp) => {
-  resp.send({message: 'pong'});
+  resp.send({ message: 'pong' });
 }
 
 const generateRTCToken = (req, resp) => {
@@ -29,7 +29,7 @@ const generateRTCToken = (req, resp) => {
   }
   // get uid 
   let uid = req.params.uid;
-  if(!uid || uid === '') {
+  if (!uid || uid === '') {
     return resp.status(500).json({ 'error': 'uid is required' });
   }
   // get role
@@ -70,12 +70,12 @@ const generateRTMToken = (req, resp) => {
 
   // get uid 
   let uid = req.params.uid;
-  if(!uid || uid === '') {
+  if (!uid || uid === '') {
     return resp.status(500).json({ 'error': 'uid is required' });
   }
   // get role
   let role = RtmRole.Rtm_User;
-   // get the expire time
+  // get the expire time
   let expireTime = req.query.expiry;
   if (!expireTime || expireTime === '') {
     expireTime = 3600;
@@ -86,8 +86,8 @@ const generateRTMToken = (req, resp) => {
   const currentTime = Math.floor(Date.now() / 1000);
   const privilegeExpireTime = currentTime + expireTime;
   // build the token
-  console.log(APP_ID, APP_CERTIFICATE, uid, role, privilegeExpireTime)
-  const token = RtmTokenBuilder.buildToken(APP_ID, APP_CERTIFICATE, uid, role, privilegeExpireTime);
+  console.log('b3b2ff03b9544c5c99ef739cacae624a', uid, role, privilegeExpireTime)
+  const token = RtmTokenBuilder.buildToken('b3b2ff03b9544c5c99ef739cacae624a', uid, role, privilegeExpireTime);
   // return the token
   return resp.json({ 'rtmToken': token });
 }
@@ -102,18 +102,15 @@ const generateRTEToken = (req, resp) => {
   }
   // get uid 
   let uid = req.params.uid;
-  if(!uid || uid === '') {
-    return resp.status(500).json({ 'error': 'uid is required' });
+  if (!uid || uid === '') {
+    uid = 0;
   }
   // get role
-  let role;
+  let role = RtcRole.SUBSCRIBER;
   if (req.params.role === 'publisher') {
     role = RtcRole.PUBLISHER;
-  } else if (req.params.role === 'audience') {
-    role = RtcRole.SUBSCRIBER
-  } else {
-    return resp.status(500).json({ 'error': 'role is incorrect' });
   }
+
   // get the expire time
   let expireTime = req.query.expiry;
   if (!expireTime || expireTime === '') {
@@ -132,9 +129,9 @@ const generateRTEToken = (req, resp) => {
 }
 
 app.get('/ping', nocache, ping)
-app.get('/rtc/:channel/:role/:tokentype/:uid', nocache , generateRTCToken);
-app.get('/rtm/:uid/', nocache , generateRTMToken);
-app.get('/rte/:channel/:role/:tokentype/:uid', nocache , generateRTEToken);
+app.get('/rtc/:channel/:role/:tokentype/:uid', nocache, generateRTCToken);
+app.get('/rtm/:uid/', nocache, generateRTMToken);
+app.get('/access_token', nocache, generateRTEToken);
 
 app.listen(PORT, () => {
   console.log(`Listening on port: ${PORT}`);

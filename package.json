@@ -7,15 +7,15 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "author": "digitallysavvy",
+  "author": "sandi Romadon",
   "contributors": [
-    "ekaansharora"
+    "Sandi Romadon"
   ],
   "license": "MIT",
   "dependencies": {
     "agora-access-token": "^2.0.4",
     "dotenv": "^10.0.0",
-    "express": "^4.17.1"
+    "express": "^4.17.3"
   },
   "devDependencies": {}
 }
